@@ -49,8 +49,8 @@ pub fn generate_terrain(
 }
 
 fn perlin(x: f32, y: f32) -> f32 {
-    let xi: usize = x.floor() as usize % 256;
-    let yi: usize = y.floor() as usize % 256;
+    let xi: usize = x.floor() as usize % 255;
+    let yi: usize = y.floor() as usize % 255;
     let xf: f32 = x - x.floor();
     let yf: f32 = y - y.floor();
 
@@ -63,10 +63,10 @@ fn perlin(x: f32, y: f32) -> f32 {
     //     println!("HIER");
     // }
 
-    let value_top_right = PERMUTATIONS[(PERMUTATIONS[xi + 1] as usize + yi + 1) % 256];
-    let value_top_left = PERMUTATIONS[(PERMUTATIONS[xi] as usize + yi + 1) % 256];
-    let value_bottom_right = PERMUTATIONS[(PERMUTATIONS[xi + 1] as usize + yi) % 256];
-    let value_bottom_left = PERMUTATIONS[(PERMUTATIONS[xi] as usize + yi) % 256];
+    let value_top_right = PERMUTATIONS[(PERMUTATIONS[xi + 1] as usize + yi + 1) % 255];
+    let value_top_left = PERMUTATIONS[(PERMUTATIONS[xi] as usize + yi + 1) % 255];
+    let value_bottom_right = PERMUTATIONS[(PERMUTATIONS[xi + 1] as usize + yi) % 255];
+    let value_bottom_left = PERMUTATIONS[(PERMUTATIONS[xi] as usize + yi) % 255];
 
     let dot_top_right = top_right.dot(get_constant_vector(value_top_right));
     let dot_top_left = top_left.dot(get_constant_vector(value_top_left));
