@@ -1,10 +1,10 @@
 # Config file use for generating terrain
 # Please do not change key names!
 
-size: 512
-frequency: 0.005
-amplitude: 0.69
-iterations: 8
+size: 5
+frequency: 0.01
+amplitude: 1.0
+iterations: 4
 scales:
   - 4.0
   - 4.0

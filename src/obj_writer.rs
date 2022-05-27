@@ -73,3 +73,26 @@ pub fn create_normal_map(file_name: &str, terrain: &Terrain) {
             .expect("Failed to write normal values");
     }
 }
+
+pub fn create_height_map(file_name: &str, terrain: &Terrain) {
+    let file_name = format!("{}.pgm", file_name);
+    let file =
+        File::create(&file_name).expect(&format!("{} {}", "Failed to open file:", &file_name));
+    let mut writer = BufWriter::new(file);
+    let size = terrain.size();
+    let header = format!("P2\n{} {}\n255\n", size, size);
+    writer
+        .write(header.as_bytes())
+        .expect("Failed to write to heightmap");
+    for i in 0..size {
+        for j in 0..size {
+            let height = (&terrain.vertices[(i, j)].z * 127.0 / terrain.scales.2) as u8 + 127;
+            writer
+                .write(format!("{} ", height).as_bytes())
+                .expect("Failed to write height values");
+        }
+        writer
+            .write("\n".as_bytes())
+            .expect("Failed to write height values");
+    }
+}

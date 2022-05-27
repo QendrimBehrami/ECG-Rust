@@ -20,16 +20,11 @@ const PERMUTATIONS: &'static [u8] = &[
     128, 195, 78, 66, 215, 61, 156, 180,
 ];
 
-pub fn generate_terrain(
-    terrain: &mut Terrain,
-    frequency: f32,
-    amplitude: f32,
-    iterations: u8,
-    scales: (f32, f32, f32),
-) {
+pub fn generate_terrain(terrain: &mut Terrain, frequency: f32, amplitude: f32, iterations: u8) {
     //Map into scales
     let size = terrain.size();
-    init_grid(terrain, scales);
+    let z_scale = terrain.scales.2;
+    init_grid(terrain);
 
     //Use displacement as frequency and roughness as amplitude
 
@@ -39,7 +34,7 @@ pub fn generate_terrain(
             let mut amplitude = amplitude;
             let mut frequency = frequency;
             for _ in 0..iterations {
-                height += scales.2 * amplitude * perlin(i as f32 * frequency, j as f32 * frequency);
+                height += z_scale * amplitude * perlin(i as f32 * frequency, j as f32 * frequency);
                 amplitude *= 0.5;
                 frequency *= 2.0;
             }

@@ -6,7 +6,7 @@ use std::{fs::File, io::Read};
 
 use serde::Deserialize;
 use terrain::Terrain;
-use terraingenerators::{diamond_square, perlin};
+use terraingenerators::perlin;
 
 #[derive(Debug, Deserialize)]
 struct Config {
@@ -30,15 +30,11 @@ impl Config {
 
 fn main() {
     let config = Config::read_from_file("config.yml");
-    let mut terrain = Terrain::new(config.size);
-    // diamond_square::generate_terrain(
-    //     &mut terrain,
-    //     config.displacement,
-    //     config.roughness,
-    //     config.scales,
-    // );
-    perlin::generate_terrain(&mut terrain,config.frequency, config.amplitude,config.iterations, config.scales);
-    diamond_square::generate_normals(&mut terrain, config.scales);
+    let mut terrain = Terrain::new(config.size,config.scales);
+    perlin::generate_terrain(&mut terrain,config.frequency, config.amplitude,config.iterations);
+    terraingenerators::generate_normals(&mut terrain); 
+    terraingenerators::generate_texels(&mut terrain);
     obj_writer::create_obj(config.file_name.as_str(), &terrain);
     obj_writer::create_normal_map(config.file_name.as_str(), &terrain);
+    obj_writer::create_height_map(config.file_name.as_str(), &terrain);
 }
