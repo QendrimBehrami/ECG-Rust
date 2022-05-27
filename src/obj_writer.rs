@@ -19,16 +19,40 @@ pub fn create_obj(file_name: &str, terrain: &Terrain) {
             .expect("Failed to write vertex values");
     });
 
+    //Write normals
+    terrain.normals.elements_row_major_iter().for_each(|n| {
+        writer
+            .write(format!("vn {} {} {}\n", n.x, n.y, n.z).as_bytes())
+            .expect("Failed to write normal values");
+    });
+
+    //Write texels
+    terrain.texels.elements_row_major_iter().for_each(|t| {
+        writer
+            .write(format!("vt {} {}\n", t.x, t.y).as_bytes())
+            .expect("Failed to write texel values");
+    });
+
     //Generate faces
     for i in 1..size {
         for j in 1..size {
+            let current_index = i * size + j + 1;
+            let left_index = i * size + j;
+            let top_index = (i - 1) * size + j + 1;
+            let top_left_index = (i - 1) * size + j;
             writer
                 .write(
                     format!(
-                        "f {} {} {}\n",
-                        i * size + j + 1,       //Self
-                        (i - 1) * size + j,     //Self top left
-                        (i - 1) * size + j + 1  //Self top
+                        "f {}/{}/{} {}/{}/{} {}/{}/{}\n",
+                        current_index,
+                        current_index,
+                        current_index,
+                        top_index,
+                        top_index,
+                        top_index,
+                        top_left_index,
+                        top_left_index,
+                        top_left_index
                     )
                     .as_bytes(),
                 )
@@ -36,20 +60,31 @@ pub fn create_obj(file_name: &str, terrain: &Terrain) {
             writer
                 .write(
                     format!(
-                        "f {} {} {}\n",
-                        i * size + j + 1,   //Self
-                        (i - 1) * size + j, //Self top left
-                        i * size + j        //Self left
+                        "f {}/{}/{} {}/{}/{} {}/{}/{}\n",
+                        current_index,
+                        current_index,
+                        current_index,
+                        left_index,
+                        left_index,
+                        left_index,
+                        top_left_index,
+                        top_left_index,
+                        top_left_index
                     )
                     .as_bytes(),
                 )
                 .expect("Failed to write faces!");
+            // writer
+            //     .write(
+            //         format!("f {} {} {}\n", current_index, left_index, top_left_index).as_bytes(),
+            //     )
+            //     .expect("Failed to write faces!");
         }
     }
 }
 
 pub fn create_normal_map(file_name: &str, terrain: &Terrain) {
-    let file_name = format!("{}.ppm", file_name);
+    let file_name = format!("{}-normalmap.ppm", file_name);
     let file =
         File::create(&file_name).expect(&format!("{} {}", "Failed to open file:", &file_name));
     let mut writer = BufWriter::new(file);
@@ -75,7 +110,7 @@ pub fn create_normal_map(file_name: &str, terrain: &Terrain) {
 }
 
 pub fn create_height_map(file_name: &str, terrain: &Terrain) {
-    let file_name = format!("{}.pgm", file_name);
+    let file_name = format!("{}-heightmap.pgm", file_name);
     let file =
         File::create(&file_name).expect(&format!("{} {}", "Failed to open file:", &file_name));
     let mut writer = BufWriter::new(file);

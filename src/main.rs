@@ -35,6 +35,6 @@ fn main() {
     terraingenerators::generate_normals(&mut terrain); 
     terraingenerators::generate_texels(&mut terrain);
     obj_writer::create_obj(config.file_name.as_str(), &terrain);
-    obj_writer::create_normal_map(config.file_name.as_str(), &terrain);
-    obj_writer::create_height_map(config.file_name.as_str(), &terrain);
+    // obj_writer::create_normal_map(config.file_name.as_str(), &terrain);
+    // obj_writer::create_height_map(config.file_name.as_str(), &terrain);
 }
